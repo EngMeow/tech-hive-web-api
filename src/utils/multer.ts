@@ -14,7 +14,6 @@ const multerOptions: multer.Options = {
   ) => {
     const allowed = ['image/jpeg', 'image/jpg', 'image/png'];
   
-    // Get the simplified MIME type (ignore charset and other parameters)
     const simplifiedMimeType = file.mimetype.split(';')[0].trim();
   
     if (allowed.includes(simplifiedMimeType)) {

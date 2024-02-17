@@ -7,7 +7,6 @@ import { Request, Response } from 'express';
 
 const prisma = new PrismaClient();
 
-// Get all User Profiles
 const allUsers = tryCatch(async (req: Request, res: Response) => {
   const users = await prisma.user.findMany({
     select: { id: true, firstName: true, lastName: true, email: true},
@@ -17,7 +16,6 @@ const allUsers = tryCatch(async (req: Request, res: Response) => {
   res.status(200).json({ message: 'Success', users });
 });
 
-// Get User Profile
 const getUserProfile = tryCatch(async (req: Request, res: Response) => {
   const userId = req.user?.id;
 
@@ -33,7 +31,6 @@ const getUserProfile = tryCatch(async (req: Request, res: Response) => {
   res.status(200).json({ message: 'Detailed user profile retrieved successfully', user });
 });
 
-// Update User Profile
 const updateUserProfile = tryCatch(async (req: Request, res: Response) => {
   const { firstName, lastName, email, password } = req.body;
 
@@ -45,7 +42,6 @@ const updateUserProfile = tryCatch(async (req: Request, res: Response) => {
 
   const updatedData = { firstName, lastName, email, password };
 
-  // Validation on Email & Password
   const handleEmail = async (email: string) => {
     if (!validator.isEmail(email)) {
       throw new InvalidEmailError('Invalid email address.', 400);
@@ -95,7 +91,6 @@ const updateUserProfile = tryCatch(async (req: Request, res: Response) => {
   });
 });
 
-// Delete User Profile
 const deleteUserProfile = tryCatch(async (req: Request, res: Response) => {
   const { id } = req.params;
 

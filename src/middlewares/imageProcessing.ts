@@ -12,7 +12,7 @@ const imageProcessing = tryCatch(async (req, res, next) => {
 
   try {
     const ext = req.file.mimetype.split('/')[1];
-    const userId = req.user?.id; // Assuming req.user is of type User
+    const userId = req.user?.id;
 
     if (!userId) {
       throw new Error('User ID not found');
@@ -38,7 +38,6 @@ const imageProcessing = tryCatch(async (req, res, next) => {
       .jpeg({ quality: 100 })
       .toFile(filepath);
 
-    // Update profileImage directly in the database
     await prisma.user.update({
       where: { id: userId },
       data: {
@@ -46,12 +45,11 @@ const imageProcessing = tryCatch(async (req, res, next) => {
       },
     });
 
-    // Fetch the updated user to ensure consistency
     const updatedUser = await prisma.user.findUnique({
       where: { id: userId },
     });
 
-    req.user = updatedUser ?? undefined; // Assuming req.user can store the entire user object
+    req.user = updatedUser ?? undefined; 
     next();
   } catch (error) {
     console.error(error);

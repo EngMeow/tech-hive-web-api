@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import jwt from 'jsonwebtoken';
-import CustomError from '../errors/customError';
+import CustomError from './errors/customError';
 
 const generateToken = (res: Response, userId: string) => {
   try {

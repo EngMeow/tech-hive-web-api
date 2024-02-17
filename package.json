@@ -13,6 +13,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@prisma/client": "^5.9.1",
     "@types/express": "^4.17.21",
     "@types/node": "^20.11.19",
     "bcrypt": "^5.1.1",
@@ -58,6 +59,7 @@
     "mongoose": "^8.0.1",
     "morgan": "^1.10.0",
     "nodemon": "^3.0.3",
+    "prisma": "^5.9.1",
     "typescript": "^5.3.3"
   }
 }

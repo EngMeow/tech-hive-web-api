@@ -1,12 +1,10 @@
-import { Request } from 'express';
-
 export interface User {
-  _id: string;
+  id: string;
   firstName: string;
   lastName: string;
   email: string;
   password: string;
-  isActive: boolean;
+  profileImage: string | null;
   createdAt: Date;
   updatedAt: Date;
 }

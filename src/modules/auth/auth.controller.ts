@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import tryCatch from '../../utils/tryCatch';
-import { CustomError, ExistingUserError } from '../../errors';
+import { CustomError, ExistingUserError } from '../../utils/errors';
 import {
   checkExistingUser,
   createUserRecord,
@@ -8,26 +8,27 @@ import {
   generateTokenAndSendCookie,
   hashUserPassword,
   validateUserInput,
-} from '../../helper/registerUserHelper';
+} from '../../utils/helper/registerUserHelper';
 import {
   findUserByEmail,
   isPasswordValid,
   validateAuthInputs,
-} from '../../helper/authUserHelper';
+} from '../../utils/helper/authUserHelper';
+import { PrismaClient } from '@prisma/client';
 
-// Define tryCatch to handle errors gracefully
-const registerUser = tryCatch( async (req: Request, res: Response): Promise<any> => {
+const prisma = new PrismaClient();
+
+const registerUser = tryCatch(async (req: Request, res: Response): Promise<any> => {
   const userData = req.body;
 
-  // check if user is already registered
   validateUserInput(userData);
+
   const existingUser = await checkExistingUser(userData);
 
   if (existingUser) {
     throw new ExistingUserError('User already exists', 400);
   }
 
-  // hashing the user password
   const hashedPassword = await hashUserPassword(userData.password);
 
   let userRecord;
@@ -40,8 +41,6 @@ const registerUser = tryCatch( async (req: Request, res: Response): Promise<any>
   }
 
   if (userRecord) {
-    // Create user profile based on user role
-
     const userResponse = formatUserResponse(userRecord);
     generateTokenAndSendCookie(res, userRecord.id);
     return res.status(201).json({
@@ -53,7 +52,7 @@ const registerUser = tryCatch( async (req: Request, res: Response): Promise<any>
   }
 });
 
-const authUser = tryCatch( async (req: Request, res: Response): Promise<any> => {
+const authUser = tryCatch(async (req: Request, res: Response): Promise<any> => {
   const { email, password } = req.body;
 
   validateAuthInputs(email, password);

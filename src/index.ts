@@ -1,9 +1,7 @@
-import express from 'express';
 import dotenv from 'dotenv';
+import express from 'express';
 import path from 'path';
-import dbConnection from './databases/dbConnection';
-import { AppError } from './errors/AppError';
-import { globalErrorMiddleware } from './utils/globalErrorMiddleware';
+import { AppError } from './utils/errors/AppError';
 import authRouter from './modules/auth/auth.routes';
 import morgan from 'morgan';
 import cookieParser from 'cookie-parser';
@@ -12,13 +10,11 @@ import helmet from 'helmet';
 import hpp from 'hpp';
 import compression from 'compression';
 import userRouter from './modules/User/user.router';
-import { User } from './helper/userInterface'; // Import the User interface from customTypes
+import { User } from './utils/helper/userInterface';
 
-dotenv.config();
-dbConnection();
-
-const port = process.env.SERVER_PORT || 3000;
 const app = express();
+dotenv.config();
+const port = process.env.SERVER_PORT || 3000;
 
 app.use(morgan('dev'));
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));

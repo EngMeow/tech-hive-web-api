@@ -8,7 +8,7 @@
       "esModuleInterop": true,
       "skipLibCheck": true
     },
-    "include": ["src/**/*.ts"],
+    "include": ["src/**/*.ts", "src/databases/models/user.model.prisma"],
     "exclude": ["node_modules", "dist"]
   }
   

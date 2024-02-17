@@ -1,8 +1,10 @@
-import mongoose from 'mongoose';
+import { PrismaClient } from '@prisma/client';
 import { Request, Response, NextFunction } from 'express';
 
+const prisma = new PrismaClient();
+
 const devError = (res: Response, err: any): void => {
-  // Operational, trusted error: send message to the client
+
   res.status(err.statusCode).json({
     status: err.status,
     message: err.message,
@@ -12,7 +14,7 @@ const devError = (res: Response, err: any): void => {
 };
 
 const prodError = (res: Response, err: any): void => {
-  // Operational, trusted error: send message to the client
+
   if (err.isOperational) {
     res.status(err.statusCode).json({
       message: err.message,
@@ -29,18 +31,19 @@ const prodError = (res: Response, err: any): void => {
   }
 };
 
-const errorHandler = (err: any, req: Request, res: Response, next: NextFunction): void => {
+const errorHandler = async (err: any, req: Request, res: Response, next: NextFunction): Promise<void> => {
   err.statusCode = err.statusCode || 500;
   err.status = err.status || 'error';
 
-  // Mongoose Error Handling
-  if (err instanceof mongoose.Error.ValidationError) {
-    // Customize the error message as needed
-    err.message = 'Validation Error: ' + err.message;
+
+  if (err.code === 'P2025') {
+    err.message = 'Invalid input: ' + err.message;
   }
-  if (err instanceof mongoose.Error.CastError) {
-    // Customize the error message as needed
-    err.message = 'Cast Error: ' + err.message;
+
+  try {
+    await prisma.$disconnect();
+  } catch (disconnectError) {
+    console.error('Error disconnecting Prisma Client:', disconnectError);
   }
 
   if (process.env.NODE_ENV === 'development') {

@@ -17,7 +17,6 @@ userRouter
   .get(protect, getUserProfile)
   .put(protect, upload('profileImage'), imageProcessing, updateUserProfile);
 
-
 // Routes for updating user status and deleting user profile
 userRouter
   .route('/:id')

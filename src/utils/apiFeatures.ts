@@ -18,20 +18,17 @@ export class ApiFeatures<T> {
     this.mongooseQuery = mongooseQuery;
     this.queryString = queryString;
     this.page = 1; 
-
   }
 
   // 1- pagination.
-paginate() {
-  let page = this.queryString.page ? parseInt(this.queryString.page.toString()) : 1;
-  if (page <= 0) page = 1;
-  const skip = (page - 1) * 5;
-  this.page = page;
-  this.mongooseQuery.skip(skip).limit(8);
-  return this;
-}
-
-
+  paginate() {
+    let page = this.queryString.page ? parseInt(this.queryString.page.toString()) : 1;
+    if (page <= 0) page = 1;
+    const skip = (page - 1) * 5;
+    this.page = page;
+    this.mongooseQuery.skip(skip).limit(8);
+    return this;
+  }
 
   // 2- filtration.
   filter() {

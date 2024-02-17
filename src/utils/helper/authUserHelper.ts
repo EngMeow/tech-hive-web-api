@@ -1,8 +1,10 @@
-import generateToken from '../utils/generateToken';
+import generateToken from '../generateToken';
 import validator from 'validator';
-import * as bcrypt from 'bcrypt';
+import bcrypt from 'bcrypt';
 import { CustomError, InvalidEmailError } from '../errors/index';
-import { UserModel } from '../databases/models/user.model';
+import { PrismaClient } from '@prisma/client';
+
+const prisma = new PrismaClient();
 
 interface UserResponse {
   id: string;
@@ -17,7 +19,7 @@ interface UserResponse {
 
 const validateAuthInputs = (email: string, password: string): void => {
   if (!email || !password) {
-    throw new CustomError('Please provide both email and password for authentication',400)
+    throw new CustomError('Please provide both email and password for authentication', 400);
   }
 
   if (!validator.isEmail(email)) {
@@ -27,7 +29,11 @@ const validateAuthInputs = (email: string, password: string): void => {
 
 const findUserByEmail = async (email: string): Promise<UserResponse | null> => {
   try {
-    const user = await UserModel.findOne({ email });
+    const user = await prisma.user.findUnique({
+      where: {
+        email,
+      },
+    });
     return user ? formatUserResponse(user) : null;
   } catch (error) {
     console.error(error);
@@ -41,7 +47,7 @@ const isPasswordValid = async (password: string, hashedPassword: string): Promis
 
 const formatUserResponse = (user: any): UserResponse => {
   const userResponse: UserResponse = {
-    id: user._id,
+    id: user.id,
     firstName: user.firstName,
     lastName: user.lastName,
     email: user.email,
@@ -53,7 +59,6 @@ const formatUserResponse = (user: any): UserResponse => {
 
   return userResponse;
 };
-
 
 const generateTokenAndSendCookie = (res: any, userId: string): void => {
   generateToken(res, userId);
